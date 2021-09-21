@@ -31,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.citigroup.demo.poc.pvd.exceptions.ApiClientNotFoundException;
 import com.citigroup.demo.poc.pvd.model.ApiClient;
 import com.citigroup.demo.poc.pvd.service.ApiClientService;
 
@@ -39,22 +40,28 @@ import com.citigroup.demo.poc.pvd.service.ApiClientService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApiKeySecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	public final String apiKeyHeaderName = "x-api-key";
+	private static final String apiKeyHeaderName = "x-api-key";
 
 	private ApiKeyAuthenticationManager authenticationManager;
 
+	private final ApiClientService apiClientService;
+
+	/**
+	 * @param apiClientService
+	 */
 	@Autowired
-	ApiClientService apiClientService;
+	public ApiKeySecurityConfiguration(ApiClientService apiClientService) {
+		this.apiClientService = apiClientService;
+	}
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 
 		ApiKeyHeaderAuthorizationFilter apiKeyAuthorizationFilter = new ApiKeyHeaderAuthorizationFilter();
 
-		httpSecurity.antMatcher("/**").csrf().disable().authorizeRequests().antMatchers("/hello").permitAll().anyRequest().authenticated().and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().addFilter(apiKeyAuthorizationFilter);
-		
-		
+		httpSecurity.antMatcher("/**").csrf().disable().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().addFilter(apiKeyAuthorizationFilter)
+				.authorizeRequests().anyRequest().authenticated();
 	}
 
 	public class ApiKeyHeaderAuthorizationFilter extends UsernamePasswordAuthenticationFilter {
@@ -78,7 +85,8 @@ public class ApiKeySecurityConfiguration extends WebSecurityConfigurerAdapter {
 			}
 
 			try {
-				UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(apikey, apikey);
+				UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(apikey,
+						apikey);
 				authRequest.setDetails(request);
 				Authentication authResult = authenticationManager.authenticate(authRequest);
 				SecurityContextHolder.getContext().setAuthentication(authResult);
@@ -101,13 +109,18 @@ public class ApiKeySecurityConfiguration extends WebSecurityConfigurerAdapter {
 		@Override
 		public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 			String credentials = (String) authentication.getCredentials();
-			ApiClient client = apiClientService.findClient(credentials);
-			if (client == null)	throw new BadCredentialsException("Access Denied");
-			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-					client.getName(), client.getApiKey(), getClientAuthorities(client));
+			ApiClient client;
+			try {
+				client = apiClientService.find(credentials);
+			} catch (ApiClientNotFoundException e) {
+				throw new BadCredentialsException("Access Denied");
+			}
+
+			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(client.getName(),
+					client.getApiKey(), getClientAuthorities(client));
 			return authToken;
 		}
-		
+
 		public List<SimpleGrantedAuthority> getClientAuthorities(ApiClient client) {
 			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 			for (String role : client.getAuthorities()) {

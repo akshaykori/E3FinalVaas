@@ -2,13 +2,15 @@ package com.citigroup.demo.poc.pvd.model;
 
 public class Customer {
 
-	private int client1 ;
 	private String account ;
-	public int getClient1() {
-		return client1;
+	private String password ;
+	
+	
+	public String getPassword() {
+		return password;
 	}
-	public void setClient1(int client1) {
-		this.client1 = client1;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 	public String getAccount() {
 		return account;
