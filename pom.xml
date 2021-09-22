@@ -19,13 +19,6 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>paymentcomponents</id>
-			<url>https://nexus.paymentcomponents.com/repository/public</url>
-		</repository>
-	</repositories>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -35,31 +28,20 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<!-- <dependency> <groupId>software.amazon.awssdk</groupId> <artifactId>bom</artifactId> 
-				<version>2.1.0</version> <type>pom</type> <scope>import</scope> </dependency> -->
 		</dependencies>
 	</dependencyManagement>
 
+	<repositories>
+		<repository>
+			<id>paymentcomponents</id>
+			<url>https://nexus.paymentcomponents.com/repository/public</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
-
-		<dependency>
-			<groupId>gr.datamation</groupId>
-			<artifactId>smv</artifactId>
-			<version>21.5.1</version>
-			<classifier>demo</classifier>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<exclusions>
-				<!-- <exclusion> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-tomcat</artifactId> 
-					</exclusion> -->
-			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -103,6 +85,36 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-dynamodb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>gr.datamation</groupId>
+			<artifactId>smv</artifactId>
+			<version>21.5.1</version>
+			<classifier>demo</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 	</dependencies>
@@ -189,4 +201,6 @@
 			</build>
 		</profile>
 	</profiles>
+
+
 </project>

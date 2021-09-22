@@ -3,23 +3,20 @@ package com.citigroup.demo.poc.pvd;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-//import com.citigroup.demo.poc.pvd.controller.PaymentValidatorController;
+import com.citigroup.demo.poc.pvd.controller.PaymentValidatorController;
 
 
 @SpringBootApplication
-//@Import({ PaymentValidatorController.class })
-public class Application extends SpringBootServletInitializer {
+@Import({ PaymentValidatorController.class })
+public class Application {
 
-	
     // silence console logging
     @Value("${logging.level.root:OFF}")
     String message = "";
@@ -43,11 +40,4 @@ public class Application extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-    
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder appe3) {
-    	return appe3.sources(Application.class);
-    }
-    
-    
 }

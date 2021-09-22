@@ -5,15 +5,16 @@ package com.citigroup.demo.poc.pvd.model;
  * 
  */
 public enum ApiClientKeys {
-	TABLE("ApiClinet"), API_KEY("ApiKey"), CLIENT_NAME("ClientName"), AUTHAURITIES("Authorities");
+	TABLE("ApiClinet"), API_KEY("ApiKey"), CLIENT_ID("ClientId"), CLIENT_NAME("ClientName"),
+	AUTHAURITIES("Authorities");
 
-	private String key;
+	private String keyName;
 
-	ApiClientKeys(String key) {
-		this.key = key;
+	ApiClientKeys(String keyName) {
+		this.keyName = keyName;
 	}
 
-	public String key() {
-		return key;
+	public String keyName() {
+		return keyName;
 	}
 }
