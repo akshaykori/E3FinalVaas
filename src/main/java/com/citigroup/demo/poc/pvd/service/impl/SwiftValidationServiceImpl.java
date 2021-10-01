@@ -10,6 +10,7 @@ import com.citigroup.demo.poc.pvd.model.MBoolean;
 import com.citigroup.demo.poc.pvd.model.SwiftValidationRequest;
 import com.citigroup.demo.poc.pvd.model.SwiftValidationResponse;
 import com.citigroup.demo.poc.pvd.model.SwiftValidationTransaction;
+import com.citigroup.demo.poc.pvd.service.AmazonSqsService;
 import com.citigroup.demo.poc.pvd.service.SwiftValidationFactory;
 import com.citigroup.demo.poc.pvd.service.SwiftValidationService;
 import com.citigroup.demo.poc.pvd.service.SwiftValidationTransactionService;
@@ -28,6 +29,9 @@ public class SwiftValidationServiceImpl implements SwiftValidationService {
 	@Autowired
 	private SwiftValidationTransactionService swiftValidationTransactionService;
 
+	@Autowired
+	private AmazonSqsService amazonSqsService;
+	
 	@Override
 	public SwiftValidationResponse validate(SwiftValidationRequest swiftValidationRequest)
 			throws SwiftValidationTransactionException {
@@ -52,6 +56,10 @@ public class SwiftValidationServiceImpl implements SwiftValidationService {
 		swiftValidationResponse.setValidationStatus(mBoolean.value());
 		swiftValidationResponse.setValidationMessage(mBoolean.getMessage());
 
+		
+		amazonSqsService.sendMessage(swiftValidationRequest.getSwiftMessageText(), transactionId);
+				
+		
 		return swiftValidationResponse;
 	}
 
